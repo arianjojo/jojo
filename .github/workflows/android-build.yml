@@ -3,16 +3,7 @@ name: Build Android APK
 on:
   push:
     branches: [ main, master ]
-    paths:
-      - 'android/**'
-      - 'platforms/**'
-      - 'relay/**'
-      - 'vpn/**'
-      - 'go.mod'
-      - 'go.sum'
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:  # اجازه اجرای دستی
+  workflow_dispatch:
 
 jobs:
   build:
@@ -34,6 +25,16 @@ jobs:
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
+      with:
+        # مشخص کردن API level مناسب
+        api-level: 33
+        build-tools: 33.0.2
+
+    - name: Install specific NDK version
+      run: |
+        # نصب NDK نسخه 25 (که با API 21 کار می‌کند)
+        sudo ${ANDROID_HOME}/tools/bin/sdkmanager "ndk;25.2.9519653"
+        echo "ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/25.2.9519653" >> $GITHUB_ENV
 
     - name: Install gomobile
       run: |
