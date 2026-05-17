@@ -1,81 +1,36 @@
-plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-}
-
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
-
 android {
-    namespace 'com.arianjojo.vpn'  // <-- اضافه کن
-    compileSdk 33
+    namespace 'com.arianjojo.vpn'
+    compileSdk 34  // ← تغییر از 33 به 34
     
     defaultConfig {
-        applicationId "com.arianjojo.vpn"  // <-- یا این خط رو تغییر بده به اسم خودت
+        applicationId "com.arianjojo.vpn"
         minSdk 21
-        targetSdk 33
+        targetSdk 34  // ← تغییر از 33 به 34
         versionCode 1
         versionName "1.0"
     }
-
-    signingConfigs {
-        release {
-            if (keystorePropertiesFile.exists()) {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-                storeFile file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
-            }
-        }
-    }
-
+    
     buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-        }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
         }
     }
-
+    
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
-
+    
     kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    buildFeatures {
-        buildConfig true
-        viewBinding true
-    }
-
-    applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            def suffix = variant.buildType.name == "debug" ? "-debug" : ""
-            outputFileName = "zyrln-${variant.versionName}${suffix}.apk"
-        }
+        jvmTarget = '11'
     }
 }
 
 dependencies {
-    // gomobile-generated AAR — built by `make aar` in the project root
-    implementation fileTree(dir: 'libs', include: ['*.aar'])
-
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-service:2.7.0'
-
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.json:json:20240303'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
 }
