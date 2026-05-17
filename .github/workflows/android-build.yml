@@ -1,5 +1,4 @@
-name: Build Android APK
-
+name: Build APK
 on:
   push:
     branches: [ main, master ]
@@ -11,11 +10,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up JDK 11
+    - name: Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '11'  # استفاده از Java 11 به جای 17
+        java-version: '11'
     
     - name: Setup Go
       uses: actions/setup-go@v5
@@ -24,35 +23,24 @@ jobs:
     
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
-      with:
-        api-level: 33
-        build-tools: 33.0.2
     
-    - name: Install NDK 23
+    - name: Setup NDK
       run: |
-        # استفاده از مسیر درست SDK manager
-        export JAVA_HOME=$JAVA_HOME_11_X64
-        ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;23.2.8568313"
-        echo "ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/23.2.8568313" >> $GITHUB_ENV
+        echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;23.2.8568313"
     
-    - name: Install gomobile
-      run: |
-        go install golang.org/x/mobile/cmd/gomobile@latest
-        gomobile init
-    
-    - name: Build Go bindings
+    - name: Build AAR
       run: |
         cd android
-        gomobile bind -target=android -o app/libs/zyrln.aar ../platforms/mobile
+        go run golang.org/x/mobile/cmd/gomobile@latest bind -target=android -o app/libs/zyrln.aar ../platforms/mobile
     
     - name: Build APK
       run: |
         cd android
         chmod +x gradlew
-        ./gradlew assembleRelease --no-daemon
+        ./gradlew assembleRelease
     
-    - name: Upload APK
+    - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: Zyrln-VPN-App
+        name: Zyrln-APK
         path: android/app/build/outputs/apk/release/*.apk
