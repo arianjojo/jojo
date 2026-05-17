@@ -49,7 +49,6 @@
     <string name="log_empty">No logs to share yet.</string>
     <string name="select_config_hint">Tap a config row to select it, then Connect</string>
     <string name="direct_only_label">Direct (Google only)</string>
-    <string name="app_name">Zyrln VPN</string>
     <string name="vpn_mode">VPN Mode</string>
     <string name="proxy_mode">Proxy Mode</string>
     <string name="connect_vpn">Connect VPN</string>
