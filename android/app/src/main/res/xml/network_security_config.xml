@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- اعتماد به سرتیفیکیت‌های سیستم -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+    
+    <!-- برای اتصال به پروکسی لوکال -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">10.0.0.2</domain>
+    </domain-config>
+    
+    <!-- برای دامنه‌های گوگل -->
+    <domain-config>
+        <domain includeSubdomains="true">google.com</domain>
+        <domain includeSubdomains="true">googleapis.com</domain>
+        <domain includeSubdomains="true">googleusercontent.com</domain>
+        <domain includeSubdomains="true">ggpht.com</domain>
+        <domain includeSubdomains="true">gstatic.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+    
+    <!-- برای debug mode -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

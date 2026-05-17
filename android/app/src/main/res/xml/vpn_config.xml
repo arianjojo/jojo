@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vpn-config>
+    <!-- آدرس‌های IP برای TUN interface -->
+    <address>10.0.0.2/24</address>
+    <address>fd00:1:1:1::2/64</address>
+    
+    <!-- DNS servers -->
+    <dns>8.8.8.8</dns>
+    <dns>8.8.4.4</dns>
+    <dns>1.1.1.1</dns>
+    
+    <!-- مسیرها -->
+    <route>0.0.0.0/0</route>
+    <route>::/0</route>
+    
+    <!-- مسیرهای استثنا (برای دور زدن VPN) -->
+    <bypass>
+        <route>192.168.0.0/16</route>
+        <route>10.0.0.0/8</route>
+        <route>172.16.0.0/12</route>
+        <route>127.0.0.0/8</route>
+    </bypass>
+    
+    <!-- متادیتا -->
+    <mtu>1500</mtu>
+    <session>Zyrln VPN</session>
+</vpn-config>
