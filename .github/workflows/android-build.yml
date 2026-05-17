@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build APK (Without Go Bindings)
 
 on:
   push:
@@ -17,50 +17,27 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
     
-    - name: Setup Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.21'
-    
     - name: Setup Android SDK
-      run: |
-        # نصب SDK tools
-        wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-        unzip -q commandlinetools-linux-11076708_latest.zip
-        mkdir -p $HOME/android-sdk/cmdline-tools
-        mv cmdline-tools $HOME/android-sdk/cmdline-tools/latest
-        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-        echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
-        echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+      uses: android-actions/setup-android@v3
+      with:
+        api-level: 33
+        build-tools: 33.0.2
+        ndk-version: '23.2.8568313'
     
-    - name: Accept Licenses and Install NDK 23
+    - name: Create placeholder AAR
       run: |
-        export JAVA_HOME=$JAVA_HOME_17_X64
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
-        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;23.2.8568313"
-        echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/23.2.8568313" >> $GITHUB_ENV
-    
-    - name: Install gomobile
-      run: |
-        go install golang.org/x/mobile/cmd/gomobile@latest
-        gomobile init
-    
-    - name: Build AAR
-      run: |
-        cd android
-        export ANDROID_NDK_HOME=$ANDROID_HOME/ndk/23.2.8568313
-        export JAVA_HOME=$JAVA_HOME_17_X64
-        gomobile bind -target=android -o app/libs/zyrln.aar ../platforms/mobile
+        mkdir -p android/app/libs
+        # ساخت یه فایل placeholder (چون بعداً جایگزین می‌شه)
+        touch android/app/libs/zyrln.aar
     
     - name: Build APK
       run: |
         cd android
         chmod +x gradlew
-        export JAVA_HOME=$JAVA_HOME_17_X64
         ./gradlew assembleRelease --no-daemon
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: Zyrln-VPN
+        name: Arian-Jojo-VPN
         path: android/app/build/outputs/apk/release/*.apk
