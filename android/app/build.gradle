@@ -10,15 +10,15 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace 'com.zyrln.relay'
-    compileSdk 34
-
+    namespace 'com.arianjojo.vpn'  // <-- اضافه کن
+    compileSdk 33
+    
     defaultConfig {
-        applicationId "com.zyrln.relay"
+        applicationId "com.arianjojo.vpn"  // <-- یا این خط رو تغییر بده به اسم خودت
         minSdk 21
-        targetSdk 34
-        versionCode 11
-        versionName "1.5.1-pre5"
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
     }
 
     signingConfigs {
