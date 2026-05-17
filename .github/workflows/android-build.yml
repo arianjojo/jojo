@@ -23,41 +23,25 @@ jobs:
         api-level: 34
         build-tools: 34.0.0
     
-    - name: Clean and rebuild gradle files
+    - name: Create minimal project files
       run: |
-        # حذف فایل‌های قدیمی
-        rm -f android/build.gradle
-        rm -f android/app/build.gradle
+        # حذف فایل‌های قدیمی مشکل‌دار
+        rm -rf android/app/src/main/res/values/themes.xml
+        rm -rf android/app/src/main/res/values-night
         
-        # ایجاد فایل settings.gradle
-        cat > android/settings.gradle << 'EOF'
-        pluginManagement {
-            repositories {
-                google()
-                mavenCentral()
-                gradlePluginPortal()
-            }
-        }
-        dependencyResolutionManagement {
-            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-            repositories {
-                google()
-                mavenCentral()
-            }
-        }
-        rootProject.name = "Zyrln"
-        include ':app'
+        # ایجاد themes.xml ساده
+        mkdir -p android/app/src/main/res/values
+        cat > android/app/src/main/res/values/themes.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <resources>
+            <style name="Theme.Zyrln" parent="android:Theme.Material.Light.NoActionBar">
+                <item name="android:colorPrimary">#2196F3</item>
+                <item name="android:colorPrimaryDark">#1976D2</item>
+            </style>
+        </resources>
         EOF
         
-        # ایجاد build.gradle ریشه
-        cat > android/build.gradle << 'EOF'
-        plugins {
-            id 'com.android.application' version '8.1.0' apply false
-            id 'org.jetbrains.kotlin.android' version '1.9.0' apply false
-        }
-        EOF
-        
-        # ایجاد build.gradle اپ
+        # بازنویسی build.gradle ساده
         cat > android/app/build.gradle << 'EOF'
         plugins {
             id 'com.android.application'
@@ -79,17 +63,7 @@ jobs:
             buildTypes {
                 release {
                     minifyEnabled false
-                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
                 }
-            }
-            
-            compileOptions {
-                sourceCompatibility JavaVersion.VERSION_11
-                targetCompatibility JavaVersion.VERSION_11
-            }
-            
-            kotlinOptions {
-                jvmTarget = '11'
             }
         }
         
@@ -98,10 +72,11 @@ jobs:
         }
         EOF
         
-        # درست کردن AndroidManifest
+        # بازنویسی AndroidManifest ساده
         cat > android/app/src/main/AndroidManifest.xml << 'EOF'
         <?xml version="1.0" encoding="utf-8"?>
-        <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+            package="com.arianjojo.vpn">
         
             <uses-permission android:name="android.permission.INTERNET" />
         
