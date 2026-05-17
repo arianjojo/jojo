@@ -11,89 +11,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup Java
-      uses: actions/setup-java@v4
+    - name: Build Android APK
+      uses: KPCOFGS/android-builder@v2
       with:
-        distribution: 'temurin'
-        java-version: '17'
-    
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-    
-    - name: Build APK
-      run: |
-        # ساخت یک پروژه ساده اندروید از صفر
-        mkdir -p android/app/src/main/java/com/example/app
-        
-        # ایجاد AndroidManifest.xml
-        cat > android/app/src/main/AndroidManifest.xml << 'EOF'
-        <?xml version="1.0" encoding="utf-8"?>
-        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-            package="com.example.app">
-            <uses-permission android:name="android.permission.INTERNET" />
-            <application android:label="Arian Jojo VPN">
-                <activity android:name=".MainActivity" android:exported="true">
-                    <intent-filter>
-                        <action android:name="android.intent.action.MAIN" />
-                        <category android:name="android.intent.category.LAUNCHER" />
-                    </intent-filter>
-                </activity>
-            </application>
-        </manifest>
-        EOF
-        
-        # فایل MainActivity.java ساده
-        cat > android/app/src/main/java/com/example/app/MainActivity.java << 'EOF'
-        package com.example.app;
-        import android.app.Activity;
-        import android.os.Bundle;
-        import android.widget.TextView;
-        
-        public class MainActivity extends Activity {
-            @Override
-            protected void onCreate(Bundle savedInstanceState) {
-                super.onCreate(savedInstanceState);
-                TextView tv = new TextView(this);
-                tv.setText("Arian Jojo VPN");
-                setContentView(tv);
-            }
-        }
-        EOF
-        
-        # فایل build.gradle
-        cat > android/build.gradle << 'EOF'
-        buildscript {
-            repositories { google(); mavenCentral() }
-            dependencies { classpath 'com.android.tools.build:gradle:7.4.2' }
-        }
-        allprojects {
-            repositories { google(); mavenCentral() }
-        }
-        EOF
-        
-        cat > android/app/build.gradle << 'EOF'
-        apply plugin: 'com.android.application'
-        android {
-            compileSdk 33
-            defaultConfig {
-                applicationId "com.example.app"
-                minSdk 21
-                targetSdk 33
-                versionCode 1
-                versionName "1.0"
-            }
-        }
-        EOF
-        
-        # gradle wrapper
-        cat > android/gradle/wrapper/gradle-wrapper.properties << 'EOF'
-        distributionUrl=https\://services.gradle.org/distributions/gradle-8.0-bin.zip
-        EOF
-        
-        # ساخت APK
-        cd android
-        chmod +x gradlew
-        ./gradlew assembleRelease
+        path: android
+        build-tools: 33.0.2
+        java: 17
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
